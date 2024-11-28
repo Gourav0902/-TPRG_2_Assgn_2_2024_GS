@@ -1,3 +1,12 @@
+'''Gouravjeet Singh (Fall 2024)
+# Student id- 100920691
+
+This program is strictly my own work. Any material
+beyond course learning materials that is taken from
+the Web or other sources is properly cited, giving.
+credit to the original author(s)
+
+'''
 # This server runs on Pi, sends Pi's your 4 arguments from the vcgencmds, sent as Json object.
 
 # details of the Pi's vcgencmds - https://www.tomshardware.com/how-to/raspberry-pi-benchmark-vcgencmd
@@ -16,12 +25,15 @@ s.listen(5)
 
 
 #gets the Core Temperature from Pi, ref https://github.com/nicmcd/vcgencmd/blob/master/README.md
-t = os.popen('vcgencmd measure_volts ain1').readline() #gets from the os, using vcgencmd - the core-temperature
+t = os.popen('vcgencmd measure_temp').readline() #gets from the os, using vcgencmd - the core-temperature
+v = os.popen('vcgencmd measure_volts core').readline()#gets from the os, using vcgencmd - the core-volt
 # initialising json object string
-ini_string = """{"Temperature": t}"""
-# converting string to json
-f_dict = eval(ini_string) # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
-
+temp = str(float(t.replace("temp=","").replace("'C\n",""))) 
+volt = str(float(v.replace("volt=","").replace("V\n","")))
+ # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
+f_dict = {"Temperature":temp,
+          "Voltage":volt
+          }
 
 
 while True:
