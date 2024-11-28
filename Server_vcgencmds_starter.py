@@ -25,15 +25,14 @@ s.listen(5)
 
 
 #gets the Core Temperature from Pi, ref https://github.com/nicmcd/vcgencmd/blob/master/README.md
-t = os.popen('vcgencmd measure_temp').readline() #gets from the os, using vcgencmd - the core-temperature
-v = os.popen('vcgencmd measure_volts core').readline()#gets from the os, using vcgencmd - the core-volt
+t = os.popen('vcgencmd measure_temp').readline() #gets from the os, using vcgencmd - the core-temperature 
+v = os.popen('vcgencmd measure_volts core').readline()
+
 # initialising json object string
-temp = str(float(t.replace("temp=","").replace("'C\n",""))) 
-volt = str(float(v.replace("volt=","").replace("V\n","")))
- # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
-f_dict = {"Temperature":temp,
-          "Voltage":volt
-          }
+ini_string = {"Temperature": t,"Voltage": v }
+# converting string to json
+f_dict = json.dumps(ini_string) # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
+
 
 
 while True:
