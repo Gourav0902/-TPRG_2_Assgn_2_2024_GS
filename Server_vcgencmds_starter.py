@@ -24,12 +24,25 @@ s.bind((host, port))
 s.listen(5)
 
 
+#gets the Core Temperature from Pi, ref https://github.com/nicmcd/vcgencmd/blob/master/README.mdimport socket
+import os, time
+import json
+
+s = socket.socket()
+host = '' # Localhost
+port = 5000
+s.bind((host, port))
+s.listen(5)
+
+
 #gets the Core Temperature from Pi, ref https://github.com/nicmcd/vcgencmd/blob/master/README.md
 t = os.popen('vcgencmd measure_temp').readline() #gets from the os, using vcgencmd - the core-temperature 
 v = os.popen('vcgencmd measure_volts core').readline()
-
+m = os.popen('vcgencmd get_mem arm').readline()
+c = os.popen('vcgencmd measure_clock arm').readline()
+Gm = os.popen('vcgencmd get_mem gpu').readline()
 # initialising json object string
-ini_string = {"Temperature": t,"Voltage": v }
+ini_string = {"Temperature": t,"Voltage": v, "Arm_Memory": m, "Arm_Clock": c, "GPU_Memory": Gm}
 # converting string to json
 f_dict = json.dumps(ini_string) # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
 
