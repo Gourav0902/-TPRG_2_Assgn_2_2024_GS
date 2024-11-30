@@ -34,29 +34,41 @@ port = 5000
 s.bind((host, port))
 s.listen(5)
 
-
 #gets the Core Temperature from Pi, ref https://github.com/nicmcd/vcgencmd/blob/master/README.md
-t = os.popen('vcgencmd measure_temp').readline() #gets from the os, using vcgencmd - the core-temperature 
-v = os.popen('vcgencmd measure_volts core').readline()#gets from the os, using vcgencmd - the core-volt
-m = os.popen('vcgencmd get_mem arm').readline()#gets from the os, using vcgencmd - the arm-memoery
-c = os.popen('vcgencmd measure_clock arm').readline()#gets from the os, using vcgencmd - the arm frequency
-Gm = os.popen('vcgencmd get_mem gpu').readline()#gets from the os, using vcgencmd - the gpu memory
+def get_temp():
+    t = os.popen('vcgencmd measure_temp').readline() # Run the vcgencmd command to get the core temperature
+    return round(float(t.replace("temp=", "").replace("'C", "")), 1) # Extract and return temperature as a float rounded to 1 decimal place
+# Function to get the core voltage of the Pi
+def get_volt():
+    v = os.popen('vcgencmd measure_volts core').readline()# Run the vcgencmd command to get the voltage
+    return round(float(v.replace("volt=", "").replace("V", "")), 1) # Extract and return voltage as a float rounded to 1 decimal place
+def get_Arm_memory():# Function to get the ARM memory usage of the Pi
+    m = os.popen('vcgencmd get_mem arm').readline() # Run the vcgencmd command to get ARM memory usage
+    return round(float(m.replace("arm=", "").replace("M", "")), 1)# Extract and return memory in megabytes, rounded to 1 decimal place
+def get_Clock_frequency():# Function to get the ARM clock frequency of the Pi
+    c = os.popen('vcgencmd measure_clock arm').readline()# Run the vcgencmd command to get ARM clock frequency
+    return round(int(c.split('=')[1]) / 1_000_000, 1)# Extract and return frequency in MHz, rounded to 1 decimal place
+def get_gpu_memory():# Function to get the GPU memory usage of the Pi
+    Gm = os.popen('vcgencmd get_mem gpu').readline()# Run the vcgencmd command to get GPU memory usage
+    return round(float(Gm.replace("gpu=", "").replace("M", "")), 1)# Extract and return memory in megabytes, rounded to 1 decimal place
 # initialising json object string
-ini_string = {
-    "Temperature": t,
-    "Voltage": v,
-    "Arm_Memory": m,
-    "Arm_Clock": c,
-    "GPU_Memory": Gm
-    }
+
+ini_string = {"Temperature":get_temp(),
+              "Voltage": get_volt(),
+              "Arm_Memory":get_Arm_memory(),
+              "Arm_Clock":get_Clock_frequency() ,
+              "GPU_Memory": get_gpu_memory()
+              }
 # converting string to json
 f_dict = json.dumps(ini_string) # The eval() function evaluates JavaScript code represented as a string and returns its completion value.
 
 
-
-while True:
-  c, addr = s.accept()
-  print ('Got connection from',addr)
-  res = bytes(str(f_dict), 'utf-8') # needs to be a byte
-  c.send(res) # sends data as a byte type
-  c.close()
+try:
+    while True:
+      c, addr = s.accept() # Accept a client connection
+      print ('Got connection from',addr)
+      res = bytes(str(f_dict), 'utf-8') # needs to be a byte
+      c.send(res) # sends data as a byte type
+except KeyboardInterrupt:
+    print ("Good Bye")# Handle graceful shutdown on Ctrl+C
+    exit()
