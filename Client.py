@@ -29,9 +29,9 @@ try:
 
     print ("Temp =",ret1,"\u2103\n")# Print temperature
     print ("Volt =",ret2,"V\n")# Print voltage
-    print("Arm_Memory=",ret3,"M\n")# Print ARM memory usage
+    print("Arm_Memory=",ret3,"\u3386\n")# Print ARM memory usage
     print("Frequency=",ret4,"\u3392\n") # Print ARM clock speed
-    print("GPU_Memory=", ret5,"M\n")# Print GPU memory usage
+    print("GPU_Memory=", ret5,"\u3386\n")# Print GPU memory usage
     # Close the socket connection
 except (socket.error, json.JSONDecodeError):# Handle exceptions that may occur during connection or JSON parsing
     print("check server connection")# Print an error message if a connection or JSON error occurs
