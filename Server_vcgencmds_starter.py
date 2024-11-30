@@ -70,5 +70,5 @@ try:
       res = bytes(str(f_dict), 'utf-8') # needs to be a byte
       c.send(res) # sends data as a byte type
 except KeyboardInterrupt:
-    print ("Good Bye")# Handle graceful shutdown on Ctrl+C
+    print ("****Good Bye**** ")# Handle graceful shutdown on Ctrl+C
     exit()
